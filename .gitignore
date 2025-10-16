@@ -1,0 +1,6 @@
+node_modules/
+build/
+artifact.zip
+test-results/
+.env
+.DS_Store
