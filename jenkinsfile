@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/gnaneshwar48/Automated-CI-Pipeline.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test || true'
+                junit 'test-results/junit.xml'
+            }
+        }
+
+        stage('Build and Package') {
+            steps {
+                sh 'npm run build'
+                sh 'zip -r artifact.zip build/'
+                archiveArtifacts artifacts: 'artifact.zip', followSymlinks: false
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build succeeded!'
+        }
+        failure {
+            echo '❌ Build failed!'
+        }
+    }
+}
